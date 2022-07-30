@@ -6,13 +6,17 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 
+import ru.netology.compararor.TicketsTravelTimeComparator;
 import ru.netology.repository.Repository;
 import ru.netology.domain.Ticket;
+
+import java.util.Comparator;
 
 public class ManagerTest {
 
     Repository repo = Mockito.mock(Repository.class);
     Manager manager = new Manager(repo);
+    TicketsTravelTimeComparator travelTimeComparator = new TicketsTravelTimeComparator();
 
     Ticket ticket1 = new Ticket(1, 300, "WRO", "WAW", 232);
     Ticket ticket2 = new Ticket(2, 600, "WRO", "ZAG", 10);
@@ -33,8 +37,8 @@ public class ManagerTest {
         doReturn(tickets).when(repo).findAll();
 
 
-        Ticket[] excepted = {ticket6, ticket7, ticket5, ticket4, ticket2};
-        Ticket[] actual = manager.findAll("WRO", "ZAG");
+        Ticket[] excepted = {ticket2, ticket5, ticket4, ticket6, ticket7};
+        Ticket[] actual = manager.findAll("WRO", "ZAG", travelTimeComparator);
 
         Assertions.assertArrayEquals(excepted, actual);
 
@@ -50,7 +54,33 @@ public class ManagerTest {
 
 
         Ticket[] expected = {ticket9, ticket10};
-        Ticket[] actual = manager.findAll("WRO", "ZAG");
+        Ticket[] actual = manager.findAll("WRO", "ZAG",travelTimeComparator);
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void sortingEqualElements1() {
+
+        Ticket[] tickets = {ticket6, ticket7};
+        doReturn(tickets).when(repo).findAll();
+
+
+        Ticket[] expected = {ticket6, ticket7};
+        Ticket[] actual = manager.findAll("WRO", "ZAG",travelTimeComparator);
+
+        Assertions.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void sortingEqualElements2() {
+
+        Ticket[] tickets = {ticket7, ticket6};
+        doReturn(tickets).when(repo).findAll();
+
+
+        Ticket[] expected = {ticket6, ticket7};
+        Ticket[] actual = manager.findAll("WRO", "ZAG",travelTimeComparator);
 
         Assertions.assertArrayEquals(expected, actual);
     }
